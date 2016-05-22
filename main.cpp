@@ -8,9 +8,10 @@ using namespace std;
 
 int main() {
 
-    String fn("/home/mmarci/ClionProjects/ProgHF/test.txt");
-    TxtFile txtFile;
-    txtFile = TxtFile(fn);
+    String fn= String("/home/mmarci/ClionProjects/ProgHF/test.txt");
+    TxtFile txtFile = TxtFile(fn);
+    //TxtFile normalSorted = txtFile.normalSort();
+
 
 
     return 0;

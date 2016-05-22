@@ -36,6 +36,8 @@ public:
     void push(String&); // add a line to the object
     Iterator end();
     Iterator begin();
+    //TxtFile operator=(TxtFile& rhs);
+
 };
 
 bool reverse(const String& lhs, const String& rhs ){
@@ -117,19 +119,22 @@ bool hread(const String& lhs, const String& rhs){
 }
 
 TxtFile::TxtFile(char* filename){
-//    if (strcmp(filename, "") == 0)
-//        throw "Can't make object from nothing... -.-' Please specify something";
-//
-//    FILE* f = fopen(filename, "r");
-//    if (f == NULL) perror ("Error opening file");
-//
-//    while(!feof(f)){
-//        String line;
-//        for ( char c = char(); c == '\n'; c = fgetc(f)){
-//            line += c;
-//        }
-//        lines.push_back(line);
-//    }
+    if (filename == "")
+        throw "Can't make object from nothing... -.-' Please specify something";
+
+    FILE *f = fopen(filename, "r");
+    if (f == NULL) perror("Error opening file");
+
+    char *line = new char[1024];
+    String sLine;
+
+    while (fgets(line, 1024, f) != NULL ) {
+        sLine = String(line);
+        lines.push_back(sLine);
+    }
+    fclose(f);
+    delete [] line;
+
 }
 
 TxtFile::TxtFile(const String& filename) {
@@ -138,43 +143,22 @@ TxtFile::TxtFile(const String& filename) {
 
     FILE *f = fopen(filename.c_str(), "r");
     if (f == NULL) perror("Error opening file");
-//    char c = (char) getc(f);
-//    String line = String(c);
-//    while(c != EOF && c != '\n'){
-//        c = (char) getc(f);
-//        line = line + c;
+
     char *line = new char[1024];
     String sLine;
 
-    while (line != NULL) {
-        line = fgets(line, 1024, f);
-        if (line != NULL){
-            sLine = String(line);
-            cout << line;
-            cout << sLine;
-        }
+    while (fgets(line, 1024, f) != NULL ) {
+        sLine = String(line);
+        lines.push_back(sLine);
     }
     fclose(f);
-
-
-
-
-
-//        while (c != '\n') {
-//            line = line + c;
-//            cout<<"+";
-//
-//            c = (char) getc(f);
-//        }
-//
-//        lines.push_back(line);
+    delete [] line;
 
 }
 
 TxtFile::TxtFile(TxtFile& other){
     for (int i = 0; i<other.getSize(); i++){
         lines.push_back(other.lines[i]);
-
     }
 }
 
@@ -245,6 +229,19 @@ TxtFile::Iterator TxtFile::end(){
 TxtFile::Iterator TxtFile::begin(){
     return lines.begin();
 }
+
+//TxtFile TxtFile::operator=( TxtFile &rhs) {
+//    if (this != &rhs){
+//        lines.clear();
+//        lines = Vector<String>();
+//        Iterator it;
+//        for (it = rhs.begin() ; it != rhs.end();  it++){
+//            lines.push_back(*it);
+//        }
+//
+//    }
+//}
+
 
 ostream &operator<<(ostream &os , TxtFile &rhs) {
     TxtFile::Iterator it;

@@ -87,9 +87,7 @@ String::String(char ch) {
 
 String::String(const char *p) {
     len = strlen(p);
-    // Helyet foglalunk
     pData = new char[len+1];
-    // BemĂĄsoljuk a stringet, ami le van zĂĄrva 0-val Ă­gy hasznĂĄlhatĂł az strcpy is
     strcpy(pData, p);
 }
 
@@ -105,7 +103,7 @@ String::String(const String& s1) {
 
 // operator=
 String& String::operator=(const String& rhs_s) {
-    if (this != &rhs_s && (pData != NULL && rhs_s.pData != NULL)) {
+    if (this != &rhs_s ) {
         delete[] pData;
         len = rhs_s.len;
         // Helyet foglalunk
