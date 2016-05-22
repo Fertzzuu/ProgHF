@@ -36,7 +36,7 @@ public:
         for (T* i = begin ; i != end; ++i) {
             T* min = i;
             for (T* j = i+1 ; j != end; ++j)
-                if (*j < *min)
+                if (*j > *min)
                     min = j;
             if (i != min)
                 swap(*i, *min);

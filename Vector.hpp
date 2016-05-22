@@ -30,6 +30,12 @@ public:
     unsigned int size() const;
     bool empty() const;
     Iterator begin();
+    Iterator  begin() const{
+        return buffer;
+    }
+    Iterator end() const{
+        return buffer + size();
+    }
     Iterator end();
     T& front();
     T& back();
@@ -44,6 +50,7 @@ public:
     void clear();
 
 
+    T &operator[](unsigned int index) const;
 };
 
 using namespace std;
@@ -150,6 +157,10 @@ void Vector<T>::resize(unsigned int size) {
 
 template<class T>
 T& Vector<T>::operator[](unsigned int index) {
+    return buffer[index];
+}
+template <class T>
+T& Vector<T>::operator[] (unsigned int index) const {
     return buffer[index];
 }
 

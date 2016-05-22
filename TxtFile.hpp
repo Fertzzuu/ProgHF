@@ -24,19 +24,22 @@ public:
     typedef String* Iterator;
 
     TxtFile(){ lines = Vector<String>();}
-    TxtFile(char*);
+    TxtFile(const char*);
     TxtFile(const String&);
-    TxtFile(TxtFile&);
+    TxtFile(const TxtFile&);
     TxtFile normalSort(); //yes
     TxtFile reverseSort(); // speaks for itself
     TxtFile notCaseSensitiveSort();	//speaks for itself
     TxtFile humanReadableSort();	//sort "K M G" values
     TxtFile numericSort();	//sort by numeric value not ascii
-    int getSize(){return lines.size();} // get the number of lines
+    int getSize()const {return lines.size();} // get the number of lines
+    int getSize() {return lines.size();} // get the number of lines
     void push(String&); // add a line to the object
-    Iterator end();
-    Iterator begin();
-    //TxtFile operator=(TxtFile& rhs);
+    Iterator end()const;
+    Iterator begin()const;
+    TxtFile operator=(TxtFile& rhs);
+    TxtFile operator=(const TxtFile& rhs) ;
+
 
 };
 
@@ -64,9 +67,9 @@ bool numeric(const String& lhs, const String& rhs){
 }
 
 bool hread(const String& lhs, const String& rhs){
-    char lhslast = lhs[lhs.length()-1];
-    char rhslast = rhs[rhs.length()-1];
-    int rhstrenght;
+    char lhslast = lhs[lhs.length()-2];
+    char rhslast = rhs[rhs.length()-2];
+    int rhStrenght;
     int lhstrenght;
     switch(lhslast){
         case 'B'  :
@@ -89,41 +92,44 @@ bool hread(const String& lhs, const String& rhs){
     }
     switch(rhslast){
         case 'B'  :
-            rhstrenght = 0;
+            rhStrenght = 0;
             break;
 
         case 'K'  :
-            rhstrenght = 1;
+            rhStrenght = 1;
             break;
 
         case 'M'  :
-            rhstrenght = 2;
+            rhStrenght = 2;
             break;
 
         case 'G'  :
-            rhstrenght = 3;
+            rhStrenght = 3;
             break;
         case 'T'  :
-            rhstrenght = 4;
+            rhStrenght = 4;
             break;
         default:
-            rhstrenght = -1;
+            rhStrenght = -1;
     }
-    if (lhstrenght < rhstrenght){
+    if (lhstrenght < rhStrenght){
         return true;
-    }else if (lhstrenght > rhstrenght){
+    }else if (lhstrenght > rhStrenght){
         return false;
     }else{
         return numeric(lhs, rhs);
     }
 }
 
-TxtFile::TxtFile(char* filename){
+TxtFile::TxtFile(const char* filename){
     if (filename == "")
         throw "Can't make object from nothing... -.-' Please specify something";
 
     FILE *f = fopen(filename, "r");
-    if (f == NULL) perror("Error opening file");
+    if (f == NULL){
+        perror(filename);
+        exit(1);
+    }
 
     char *line = new char[1024];
     String sLine;
@@ -142,7 +148,11 @@ TxtFile::TxtFile(const String& filename) {
         throw "Can't make object from nothing... -.-' Please specify something";
 
     FILE *f = fopen(filename.c_str(), "r");
-    if (f == NULL) perror("Error opening file");
+    if (f == NULL) {
+        perror(filename.c_str());
+        exit(1);
+    }
+
 
     char *line = new char[1024];
     String sLine;
@@ -156,7 +166,7 @@ TxtFile::TxtFile(const String& filename) {
 
 }
 
-TxtFile::TxtFile(TxtFile& other){
+TxtFile::TxtFile(const TxtFile& other){
     for (int i = 0; i<other.getSize(); i++){
         lines.push_back(other.lines[i]);
     }
@@ -222,25 +232,36 @@ TxtFile TxtFile::humanReadableSort(){
     return tmp;
 }
 
-TxtFile::Iterator TxtFile::end(){
+TxtFile::Iterator TxtFile::end()const {
     return lines.end();
 }
 
-TxtFile::Iterator TxtFile::begin(){
+TxtFile::Iterator TxtFile::begin()const {
     return lines.begin();
 }
 
-//TxtFile TxtFile::operator=( TxtFile &rhs) {
-//    if (this != &rhs){
-//        lines.clear();
-//        lines = Vector<String>();
-//        Iterator it;
-//        for (it = rhs.begin() ; it != rhs.end();  it++){
-//            lines.push_back(*it);
-//        }
-//
-//    }
-//}
+TxtFile TxtFile::operator=( TxtFile &rhs) {
+    if (this != &rhs){
+        lines.clear();
+        lines = Vector<String>();
+        Iterator it;
+        for (it = rhs.begin() ; it != rhs.end();  it++){
+            lines.push_back(*it);
+        }
+
+    }
+}
+
+TxtFile TxtFile::operator=(const TxtFile &rhs) {
+    if (this != &rhs){
+        lines.clear();
+        lines = Vector<String>();
+        TxtFile::Iterator it;
+        for (it = rhs.begin(); it != rhs.end(); it++){
+            lines.push_back(*it);
+        }
+    }
+}
 
 
 ostream &operator<<(ostream &os , TxtFile &rhs) {
